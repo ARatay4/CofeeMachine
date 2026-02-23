@@ -9,28 +9,37 @@ namespace Coffee_Machine.Application.Features.Queries.Brew
     {
         private readonly IDateTimeProvider _dateTimeProvider;
         private readonly IBrewCounter _brewCounter;
-        public GetBrewCoffeeQueryHandler(IDateTimeProvider dateTimeProvider, IBrewCounter brewCounter)
+        private readonly IWeatherService _weatherService;
+        public GetBrewCoffeeQueryHandler(IDateTimeProvider dateTimeProvider, IBrewCounter brewCounter, IWeatherService weatherService)
         {
             _dateTimeProvider = dateTimeProvider;
             _brewCounter = brewCounter; 
+            _weatherService = weatherService;
         }
 
-        public Task<APIResponse<CoffeeStatus>> Handle(GetBrewCoffeeQuery request, CancellationToken cancellationToken)
+        public async Task<APIResponse<CoffeeStatus>> Handle(GetBrewCoffeeQuery request, CancellationToken cancellationToken)
         {
             int callNumber = _brewCounter.IncrementValue();
 
             if (_dateTimeProvider.Today.Month == 4 && _dateTimeProvider.Today.Day == 1)
             {
-                return Task.FromResult<APIResponse<CoffeeStatus>>(null);
+                return null;
             }
 
             //on 5th call machine will be unavailable
             if (callNumber % 5 == 0)
                 throw new MachineUnavailableException();
 
+            string message = "Your piping hot coffee is ready";
+
+            // IP-based weather check
+            double temp = await _weatherService.GetCurrentTemperatureAsync();
+            if (temp > 30)
+                message = "Your refreshing iced coffee is ready";
+
             var response = new APIResponse<CoffeeStatus>
             {
-                Message = "Your piping hot coffee is ready",
+                Message = message,
                 Prepared = _dateTimeProvider.Now.ToString("yyyy-MM-ddTHH:mm:ssK"),
                 Data = new CoffeeStatus
                 {
@@ -38,7 +47,7 @@ namespace Coffee_Machine.Application.Features.Queries.Brew
                 }
             };
 
-            return Task.FromResult(response);
+            return response;
         }
     }
 }
