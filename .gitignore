@@ -1,0 +1,59 @@
+# =========================
+# .NET Build Artifacts
+# =========================
+bin/
+obj/
+publish/
+*.exe
+*.dll
+*.pdb
+*.app
+*.log
+
+# =========================
+# Visual Studio / IDE
+# =========================
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.vscode/
+.idea/
+*.iml
+
+# =========================
+# NuGet
+# =========================
+*.nupkg
+*.snupkg
+.nuget/
+packages/
+
+# =========================
+# Test results
+# =========================
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+
+# =========================
+# Rider / ReSharper
+# =========================
+_ReSharper*/
+*.DotSettings.user
+
+# =========================
+# OS-specific
+# =========================
+Thumbs.db
+.DS_Store
+*.log
+
+# =========================
+# Others (Optional)
+# =========================
+*.cache
+*.bak
+*.backup
